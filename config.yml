@@ -1,0 +1,46 @@
+backend:
+  name: git-gateway
+  branch: main
+  # Optional: drop a logo.svg (or .png) in the repo root and uncomment this
+  # to brand the login screen instead of the default Decap logo.
+  # logo_url: /logo.svg
+
+# Uploaded cover images land in the same root folder as everything else
+# (no assets/ subfolder), referenced from the site root.
+media_folder: ""
+public_folder: "/"
+
+publish_mode: simple
+
+# Shows a live card preview (matching the real site design) next to the
+# editor. Registered in admin.html via CMS.registerPreviewTemplate.
+editor:
+  preview: true
+
+collections:
+  - name: "catalog"
+    label: "Catalog"
+    label_singular: "Item"
+    description: "Every release card on the site. Use the search box above the list to jump to an item by title — with 1000+ items this is much faster than scrolling."
+    # "." = repo root. Every item is its own file sitting flat right next
+    # to index.html, style.css, etc — no items/ subfolder. The ".item.json"
+    # suffix (instead of plain ".json") is what keeps this collection from
+    # trying to treat items.json, package files, etc. as catalog entries.
+    folder: "."
+    create: true
+    delete: true
+    extension: "item.json"
+    format: "json"
+    slug: "{{slug}}"
+    summary: "{{title}}"
+    sortable_fields: ["title", "date"]
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Cover Image", name: "image", widget: "image", required: false }
+      - { label: "Description", name: "description", widget: "text" }
+      - label: "Download Link"
+        name: "link"
+        widget: "string"
+        hint: "Paste the SwiftUpload (or other host) link people should be redirected to."
+      - { label: "Date Added", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false, hint: "Optional short labels, e.g. v1.2, beta" }

@@ -1,0 +1,11 @@
+{
+  "title": "Sample Project One",
+  "image": "",
+  "description": "This is a placeholder entry so you can see the layout. Edit or delete it from admin.html once you're ready to add your real items.",
+  "link": "https://example.com/replace-with-your-swiftupload-link",
+  "date": "2026-07-01",
+  "tags": [
+    "demo",
+    "v1.0"
+  ]
+}

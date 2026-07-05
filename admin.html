@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — THE VAULT</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    /* Decap's editor chrome itself can't be deep-themed (that's a Decap
+       limitation, not something fixable from config), but this at least
+       keeps the login screen from being a jarring white flash before it
+       loads, and matches the preview pane background below. */
+    html, body { background: #0b0d11; }
+  </style>
+</head>
+<body>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    // Sends people through the Netlify Identity login/invite flow
+    // before they ever see the CMS UI.
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", (user) => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin.html";
+          });
+        }
+      });
+    }
+
+    // Live preview: while editing an item, shows it as an actual card
+    // using the site's real style.css, so you can see exactly how it'll
+    // look on the live site before you publish.
+    CMS.registerPreviewStyle("/style.css");
+
+    var CatalogPreview = createClass({
+      render: function () {
+        var entry = this.props.entry;
+        var image = entry.getIn(["data", "image"]);
+        var resolvedImage = image ? this.props.getAsset(image) : null;
+
+        var cover = resolvedImage
+          ? h("img", { src: resolvedImage.toString() })
+          : h("div", { style: { fontFamily: "monospace", color: "#8a8f99", fontSize: "12px" } }, "no cover");
+
+        var tags = entry.getIn(["data", "tags"]);
+        var tagEls = tags
+          ? tags.toJS().map(function (t, i) {
+              return h("span", { className: "tag", key: i }, t);
+            })
+          : [];
+
+        return h(
+          "div",
+          { style: { background: "#0b0d11", padding: "24px" } },
+          h(
+            "article",
+            { className: "card", style: { maxWidth: "320px" } },
+            h("div", { className: "card-cover" }, cover),
+            h(
+              "div",
+              { className: "card-body" },
+              h("h2", { className: "card-title" }, entry.getIn(["data", "title"])),
+              h("p", { className: "card-desc" }, entry.getIn(["data", "description"])),
+              h("div", { className: "tag-row" }, tagEls),
+              h("div", { className: "download-btn" }, "Download ↗")
+            )
+          )
+        );
+      },
+    });
+
+    CMS.registerPreviewTemplate("catalog", CatalogPreview);
+  </script>
+</body>
+</html>
